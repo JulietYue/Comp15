@@ -1,0 +1,175 @@
+/*
+ *  section A
+ *
+ *  COMP 15 proj2 
+ *
+ *  gerp README
+ *  Made By (qyue01):Qinghan Yue
+ *       On        :Apr 23 2017
+ *
+ */
+
+*****************************************************************************
+B. The purpose of the program
+The purpose of the prorgam is to build a search tool ro find words in a given
+directory.
+
+*****************************************************************************
+C.Acknowlegde for the help
+https://www.youtube.com/playlist?list=PLTxllHdfUq4f7-uHOpxXnBUbsuLiI9pmb
+
+http://stackoverflow.com/questions/9235296
+how-to-detect-empty-lines-while-reading-from-istream-object-in-c
+
+http://stackoverflow.com/questions/2369467
+why-are-hash-table-expansions-usually-done-by-doubling-the-size
+
+http://www.algolist.net/Data_structures/Hash_table/Dynamic_resizing
+
+http://www.asciitable.com/
+
+http://stackoverflow.com/questions/18318980/
+taking-input-of-a-string-word-by-word
+
+*****************************************************************************
+D. provided files and purposes
+
+main.cpp: integrate whole program and interact with users
+
+Simulation.h: function declaration for Simulation class
+Simulation.cpp: function implementation for the Simulation class that process
+                the information from the files and users using Hash
+
+Hash.h: function declaration for Hash class
+Hash.cpp: function implemenation for Hash class, build a functional hash
+          table 
+
+stringProcessing.cpp: implementation for the stringProcessing function
+stringProcessing.h: function declaration for stringProcessing function
+
+FSTree.h: function declaration for FSTree class
+DirNode.h:  function declaration for DirNode class
+
+Makefile: linked all the files together according to its relations and 
+          provide the project through it
+
+README: Explanation of the design of the project
+
+*****************************************************************************
+E. Compile and run
+I compile the program using Makefile. In the file, it will use clang++ to 
+compile(c++11 version)
+
+Also compiled with "-O2" to optimize the program in order to get a faster
+run time
+
+Run the program by using ./gerp Directory
+
+*****************************************************************************
+F. An outline of the data structures and algorithms
+
+I have two basic structs
+CharNode and filesData.
+
+CharNode is used to store the information for each key and values.
+I used the string that has been converted to all lower case string as the key
+for each word, in string word I store this key.
+in string original, I store the original word,
+in size_t index, I store the index of the corresponding index of its
+filesData
+in ChainNode *next, I store the location of the next node for chaining
+purpose
+
+filesData store the information of the files and data,
+The string path stores the directory path and 
+The int line stores the line #
+
+with the index in the CharNode, I can access to the path and the line # the
+word appears in.
+
+My HashTable is a dynamic array of CharNode pointers.
+I used chaining to deal with collision and each time when there is a 
+collision,
+I add the element to the front of the linked list because it is faster. 
+Adding to the back will result in walking through the whole list and that 
+is very very slow.
+
+In the simulation class, I first recursively go through all the files and 
+open to process each line and word.
+Add each line and its corresponding directory to a vector that hold all the 
+filesData.
+Then for each line, split it into words, check for duplicates within the 
+line, check if it is an empty sting, and then add them to the table.
+
+When search for words, I have an int vector that store the indices of the
+filesData
+search the word according to the specified mode
+if the vector size is 0, the word is not found
+if not, for each index in the vector, go to the index in the files vector
+and print out the path and line number.
+Then open the file according to the path, getline from the file (line #)
+times and print out the line
+
+In this way, my files data will only be stored once in the vector and I do
+not need to store the whole content. These all help to save space. But
+might be slower because I need to reopen each file when outputing the search
+result. However, when I store the data, it will be faster. There is a trade
+off.
+Stroing the index in each CharNode helps to map each word with its file data
+Because of the characteristic of a vector, we can access to its value using 
+the index and it is really convenient and quick.
+
+When I hash the word, I use the all-lowercase version of the word as the key.
+But also store the original version 
+Thus, when using case insensitive search, I will convert the input string to
+all lowercase and compare it with the all lowercase version in the CharNode
+when using case sensitive search, I will still first convert it to lowercase
+and hash it in order to find the index. Then, I use the original word to 
+compare with the original version stored in each CharNode 
+
+In insensitive search
+When it comes to the case where in the same line there are more than one 
+same word but in different form(We we wE)
+I go through the vector that holds the search result to check if the same
+index has already existed in the final result to prevent printing the same
+line twice.
+
+I set the initial hash table capacity as a relatively big prime number
+because it can better the hash result(reduce collision)
+
+*****************************************************************************
+G Testing
+For each class, I write print functions to print out some results to check
+Write test mains for each class while writing them, test each functoin
+right after finish writing it
+Check runtime/space usage on each directory
+--most of the times, my program runs faster than the_gerp and even take
+less space
+Check valgrind to make sure there are no errors/memory loss
+(I find out that the_gerp has valgrind memory loss somehow)
+
+Write my own test file to test normal cases, corner cases like @$@#$, #$love!
+and also empty string
+For insensitive search, check the cases like (We we wE), make sure the line
+only gets to print out once.
+take off query and compare the output with the_gerp to make sure there is no
+difference
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
